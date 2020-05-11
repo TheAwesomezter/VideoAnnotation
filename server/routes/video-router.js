@@ -2,23 +2,23 @@ const VideoData = require("../db/models/video-insertion");
 
 const insertData = (req, res) => {
   const body = req.body;
-  
+
   if (!body) {
     return res.status(400).json({
       success: false,
       error: "Select a square",
     });
   }
-  
+
   const video = new VideoData();
   // video.incidentData.push(body);
-  video.incidentData = body;
-  
+  video.drawnData = body;
+
   if (!video) {
     return res.status(400).json({ success: false });
   }
-  
-  console.log('inserting some data')
+
+  console.log("inserting some data");
   video
     .save()
     .then(() => {
@@ -52,7 +52,7 @@ const getData = async (req, res) => {
 
 const deleteAllData = async (req, res) => {
   // TO BE REMOVED IN PRODUCTION
-  console.log("deleted some data")
+  console.log("deleted some data");
   await VideoData.deleteMany({}, (err, data) => {
     if (err) {
       return res.status(400).json({ success: false, error: err });
@@ -65,5 +65,5 @@ const deleteAllData = async (req, res) => {
 module.exports = {
   insertData,
   getData,
-  deleteAllData
+  deleteAllData,
 };

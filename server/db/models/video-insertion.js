@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const VideoSchema = new Schema({
-  incidentData: {
+  drawnData: {
     type: Schema.Types.Mixed,
     required: true,
   },
