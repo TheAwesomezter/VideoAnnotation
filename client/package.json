@@ -4,15 +4,21 @@
   "private": true,
   "proxy": "http://localhost:8080",
   "dependencies": {
+    "@material-ui/core": "^4.9.14",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "capture-frame": "^3.0.1",
+    "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-annotation-tool": "^1.1.5",
     "react-canvas-draw": "^1.1.1",
     "react-dom": "^16.13.1",
+    "react-polygon": "^0.2.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "react-sketch": "^0.5.1",
+    "video-react": "^0.14.1"
   },
   "scripts": {
     "start": "react-scripts start",
