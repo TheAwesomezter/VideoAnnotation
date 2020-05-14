@@ -1,131 +1,130 @@
 import React, { Component } from "react";
+import { Player, ControlBar } from "video-react";
+import { SketchField, Tools } from "react-sketch";
+
 import video from "./video.mp4";
-import CanvasDraw from "react-canvas-draw";
+import "./style.scss";
+
+const captureFrame = require("capture-frame");
 
 export default class VideoAnnotation extends Component {
   constructor(props) {
     super(props);
 
+    this.width = 1920;
+    this.height = 1080;
+
+    this.videoData = {};
+
+    this.options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
     this.state = {
-      canvas: {
-        width: 0,
-        height: 0,
-      },
-      video: {
-        width: 720,
-        height: 480,
-      },
-      firstDone: false,
+      image: undefined,
     };
   }
 
-  options = {
-    method: "POST",
-    headers: {
-      "Content-type": "application/json",
-    },
-  };
-
-  componentDidMount() {
-    this.getVideoData()
-    .then((res) => this.setState({ data: [res.data[1].drawnData.toSave] })) // change the index if saving multiple times
-    .catch((err) => console.error(err));
-
-    console.log(this.state.data)
-  }
-
-  getVideoData = async () => {
+  async componentDidMount() {
     const response = await fetch("/getData");
-    if (response.status !== 200) {
-      throw Error(await response.json().message);
-    }
+    const json = await response.json();
 
-    return await response.json();
-  };
-
-  _onLoadMetadata(e) {
-    let ratio = e.target.videoWidth / e.target.videoHeight;
-    let w = e.target.videoWidth - 100;
-    let h = parseInt(w / ratio, 10);
-
-    console.log(w, h);
-    this.setState({ canvas: { width: w, height: h }, w, h });
-    document.querySelector("canvas").width = this.state.video.width;
-    document.querySelector("canvas").height = this.state.video.height;
-    console.log(this.state);
+    // console.log(json.data[0].drawnData.data);
+    this.setState({ saveData: json.data[0].drawnData.data });
   }
 
-  snap() {
-    let context = document.querySelector("canvas").getContext("2d");
-    context.fillRect(0, 0, this.state.w, this.state.h);
-    context.drawImage(
-      document.querySelector("video"),
-      0,
-      0,
-      this.state.video.width,
-      this.state.video.height
+  takeScreenshot() {
+    const video = this.player.video.video; // getting the video player current state
+
+    const ss = captureFrame(video);
+    this.setState(
+      { image: window.URL.createObjectURL(new window.Blob([ss])) },
+      () => {
+        // this.imgTag.width = this.width;
+        // this.imgTag.height = this.height;
+        this.getRequiredData();
+        this.sketchField.setBackgroundFromDataUrl(this.state.image);
+        this.sketchField.zoom(0);
+      }
     );
-    let dataURI = document.querySelector("canvas").toDataURL("image/jpeg");
-    this.setState({ dataURI }, () => {
-      this.setState({
-        draw: (
-          <CanvasDraw
-            ref={(canvasDraw) => (this.saveCanvas = canvasDraw)}
-            imgSrc={this.state.dataURI}
-            immediateLoading={true}
-            saveData={(this.state.data) + ""}
-          ></CanvasDraw>
-        ),
-        firstDone: true,
-      });
-    });
   }
 
-  async saveData() {
-    let toSave = this.saveCanvas.getSaveData();
-    this.options.body = JSON.stringify({toSave});
+  async insertData() {
+    const data = this.state.dataToBeSaved;
+    this.options.body = JSON.stringify({ data });
 
-    const respone = await fetch("/insertData", this.options);
-    const res = await respone.json();
+    console.log(this.options);
 
-    if (res.message === "Not Inserted") {
-      alert("Something went wrong");
-      console.log(res);
-      return;
+    const response = await fetch("/insertData", this.options);
+    const json = await response.json();
+
+    if (json.message !== "Not Inserted") {
+      alert("inserted");
     } else {
-      alert("inserted video data");
+      console.log(json);
     }
+  }
+
+  getRequiredData() {
+    const { player } = this.player.getState();
+    console.log(player.currentTime);
+  }
+
+  saveSomeData() {
+    this.setState({ dataToBeSaved: this.sketchField.toJSON() }, () =>
+      this.insertData()
+    );
   }
 
   render() {
     return (
       <div>
-        <video
-          height={this.state.video.height}
-          width={this.state.video.width}
-          controls
-          onLoadedMetadata={(e) => this._onLoadMetadata(e)}
-        >
-          <source src={video} type="video/mp4" />
-        </video>
-        <canvas></canvas>
-        <button onClick={() => this.snap()}>Click Me</button>
-        {this.state.draw}
+        <h1>Another Implementation</h1>
+        <div className="foo">
+          <Player
+            fluid={false}
+            ref={(player) => {
+              this.player = player;
+            }}
+            src={video}
+            width={this.width}
+            height={this.height}
+            crossOrigin={"anonymous"}
+          >
+            <ControlBar autoHide={false} />
+          </Player>
+        </div>
         <button
           onClick={() => {
-            this.saveData();
+            this.takeScreenshot();
           }}
         >
-          Click to save
+          Take Screenshot
         </button>
-        <button onClick={() => this.saveCanvas.clear()}>Clear</button>
+        <br />
+
+        {/* <img
+          src={this.state.image}
+          alt="None"
+          ref={(imgTag) => (this.imgTag = imgTag)}
+        /> */}
+
+        <SketchField
+          width={this.width}
+          height={this.height}
+          tool={Tools.Pencil}
+          ref={(sketchField) => (this.sketchField = sketchField)}
+          value={this.state.saveData}
+          lineColor="black"
+          fillColor="green"
+          lineWidth={3}
+        />
+
+        <button onClick={() => this.saveSomeData()}>Log It</button>
       </div>
     );
   }
 }
- 
-
-/* ISSUES:
- Basically, only one image per reload can be edited, so once a person clicks on the click me button, they would only be able to edit the current screenshot, and further attempts at clicking the click me button would just reload the picture on canvas, but not on the editable one.
- No error handling implemented
-*/
