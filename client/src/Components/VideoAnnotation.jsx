@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Player, ControlBar } from "video-react";
-import { SketchField, Tools } from "react-sketch";
 
 import video from "./video.mp4";
 import "./style.scss";
@@ -14,26 +13,12 @@ export default class VideoAnnotation extends Component {
     this.width = 1920;
     this.height = 1080;
 
-    this.videoData = {};
-
     this.options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
     };
-
-    this.state = {
-      image: undefined,
-    };
-  }
-
-  async componentDidMount() {
-    const response = await fetch("/getData");
-    const json = await response.json();
-
-    // console.log(json.data[0].drawnData.data);
-    this.setState({ saveData: json.data[0].drawnData.data });
   }
 
   takeScreenshot() {
@@ -42,40 +27,7 @@ export default class VideoAnnotation extends Component {
     const ss = captureFrame(video);
     this.setState(
       { image: window.URL.createObjectURL(new window.Blob([ss])) },
-      () => {
-        // this.imgTag.width = this.width;
-        // this.imgTag.height = this.height;
-        this.getRequiredData();
-        this.sketchField.setBackgroundFromDataUrl(this.state.image);
-        this.sketchField.zoom(0);
-      }
-    );
-  }
-
-  async insertData() {
-    const data = this.state.dataToBeSaved;
-    this.options.body = JSON.stringify({ data });
-
-    console.log(this.options);
-
-    const response = await fetch("/insertData", this.options);
-    const json = await response.json();
-
-    if (json.message !== "Not Inserted") {
-      alert("inserted");
-    } else {
-      console.log(json);
-    }
-  }
-
-  getRequiredData() {
-    const { player } = this.player.getState();
-    console.log(player.currentTime);
-  }
-
-  saveSomeData() {
-    this.setState({ dataToBeSaved: this.sketchField.toJSON() }, () =>
-      this.insertData()
+      () => {}
     );
   }
 
@@ -105,25 +57,6 @@ export default class VideoAnnotation extends Component {
           Take Screenshot
         </button>
         <br />
-
-        {/* <img
-          src={this.state.image}
-          alt="None"
-          ref={(imgTag) => (this.imgTag = imgTag)}
-        /> */}
-
-        <SketchField
-          width={this.width}
-          height={this.height}
-          tool={Tools.Pencil}
-          ref={(sketchField) => (this.sketchField = sketchField)}
-          value={this.state.saveData}
-          lineColor="black"
-          fillColor="green"
-          lineWidth={3}
-        />
-
-        <button onClick={() => this.saveSomeData()}>Log It</button>
       </div>
     );
   }
