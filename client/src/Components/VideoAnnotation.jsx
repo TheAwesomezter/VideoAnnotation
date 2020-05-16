@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { Player, ControlBar } from "video-react";
+import { TwoDimensionalVideo } from "react-annotation-tool";
 
 import video from "./video.mp4";
 import "./style.scss";
-
-const captureFrame = require("capture-frame");
 
 export default class VideoAnnotation extends Component {
   constructor(props) {
@@ -21,42 +19,16 @@ export default class VideoAnnotation extends Component {
     };
   }
 
-  takeScreenshot() {
-    const video = this.player.video.video; // getting the video player current state
-
-    const ss = captureFrame(video);
-    this.setState(
-      { image: window.URL.createObjectURL(new window.Blob([ss])) },
-      () => {}
-    );
+  submit() {
+    console.log();
   }
 
   render() {
     return (
       <div>
-        <h1>Another Implementation</h1>
-        <div className="foo">
-          <Player
-            fluid={false}
-            ref={(player) => {
-              this.player = player;
-            }}
-            src={video}
-            width={this.width}
-            height={this.height}
-            crossOrigin={"anonymous"}
-          >
-            <ControlBar autoHide={false} />
-          </Player>
-        </div>
-        <button
-          onClick={() => {
-            this.takeScreenshot();
-          }}
-        >
-          Take Screenshot
-        </button>
-        <br />
+        <h1>Main Implementation</h1>
+
+        <TwoDimensionalVideo url={video} onSubmit={submit} />
       </div>
     );
   }
