@@ -2,17 +2,16 @@
 
 ### Pre-Requisites
 - A mongoDB cloud atlas connection string
-- A .env file with the following value stored in the server folder: 
+- A .env file with the following value stored folder: 
 ```MONGO_URL=<your_mongodb_connection_string>```
-- A video file in the MP4 format, renamed to 'video.mp4' in the componentes folder of Client/src/
+- A video file in the MP4 format, renamed to 'video.mp4' in the componentes folder of client/src/
 
 ### To install:
 ```
 1. git clone https://github.com/TheAwesomezter/VideoAnnotation.git
 2. cd VideoAnnotation
-3. cd server
-4. npm install
-5. npm start
+3. npm install
+4. npm start
 
   Then open another terminal and go to the cloned repository:
 
