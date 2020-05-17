@@ -14,10 +14,6 @@ app.use(bodyParser.json());
 
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
-app.get("/", async (req, res) => {
-  res.send("Hello World");
-});
-
 app.post("/insertData", routes.insertData);
 app.get("/getData", routes.getData);
 app.get("/deleteAllData", routes.deleteAllData); // To be removed in production
