@@ -11,6 +11,7 @@ const routes = require("./routes/video-router");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(express.static("client/build"));
 app.use(bodyParser.json());
 
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
