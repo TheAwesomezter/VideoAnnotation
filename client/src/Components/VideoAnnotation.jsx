@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { TwoDimensionalVideo } from "react-annotation-tool";
 
-import video from "./video.mp4";
+// import video from "./video.mp4";
 import "./style.scss";
 
+const video = "http://techslides.com/demos/sample-videos/small.mp4";
 export default class VideoAnnotation extends Component {
   constructor(props) {
     super(props);
