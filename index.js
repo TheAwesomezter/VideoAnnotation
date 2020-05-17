@@ -23,7 +23,7 @@ app.get("/getData", routes.getData);
 app.get("/deleteAllData", routes.deleteAllData); // To be removed in production
 
 app.get("/*", (req, res) => {
-  res.sendFile(__dirname, 'build', 'index.html')
+  res.sendFile(__dirname, 'client/build', 'index.html')
 })
 
 app.listen(PORT, () => {
