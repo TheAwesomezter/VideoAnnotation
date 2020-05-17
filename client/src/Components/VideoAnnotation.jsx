@@ -19,8 +19,8 @@ export default class VideoAnnotation extends Component {
     };
   }
 
-  submit() {
-    console.log();
+  submit(e) {
+    console.log(e);
   }
 
   render() {
@@ -28,7 +28,7 @@ export default class VideoAnnotation extends Component {
       <div>
         <h1>Main Implementation</h1>
 
-        <TwoDimensionalVideo url={video} onSubmit={submit} />
+        <TwoDimensionalVideo url={video} onSubmit={(e) => this.submit(e)} />
       </div>
     );
   }
