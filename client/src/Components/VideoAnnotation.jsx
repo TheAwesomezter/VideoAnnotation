@@ -30,14 +30,24 @@ export default class VideoAnnotation extends Component {
     const response = await fetch("/getData");
     const json = await response.json();
 
-    this.setState({ defaultData: json.data[1].drawnData.data }, () => {
-      // console.log(this.state.defaultData[0]);
-      this.defaultAnnotations = this.state.defaultData[0];
-      this.setState({
-        defaultAnnotations: this.defaultAnnotations,
-        ready: true,
-      });
+    console.log(json.data[1].drawnData);
+    this.setState({
+      tag: (
+        <TwoDimensionalVideo
+          url={video}
+          onSubmit={(e) => this.submit(e)}
+          defaultAnnotations={json.data[2].drawnData} // this number still needs to be changed manually
+        />
+      ),
     });
+    // this.setState({ defaultData: json.data[0].drawnData }, () => {
+    //   console.log(this.state.defaultData[0]);
+    //   this.defaultAnnotations = this.state.defaultData[0];
+    //   this.setState({
+    //     defaultAnnotations: this.defaultAnnotations,
+    //     ready: true,
+    //   });
+    // });
   }
 
   submit(e) {
@@ -49,8 +59,8 @@ export default class VideoAnnotation extends Component {
   }
 
   async insertVideoData(data) {
-    console.log(data);
-    this.options.body = JSON.stringify({ data });
+    // console.log(data);
+    this.options.body = JSON.stringify(data);
 
     const response = await fetch("/insertData", this.options);
     const res = await response.json();
@@ -70,44 +80,39 @@ export default class VideoAnnotation extends Component {
     // console.log(videoAnn);
     console.log(this.state);
 
-    let oo = [
-      {
-        color: "rgba(0, 0, 0, 1)",
-        incidents: [
-          {
-            x: 184.25,
-            y: 80,
-            width: 99,
-            height: 105,
-            time: 0,
-            status: "Show",
-            id: "kacb6zeg",
-            name: "kacb6zeg",
-            label: "",
-          },
-        ],
-        childrenNames: [],
-        parentName: "",
-        id: "kacb6zeg",
-        name: "kacb6zeg",
-        label: "1",
-      },
-    ];
+    // let oo = [
+    //   {
+    //     color: "rgba(0, 0, 0, 1)",
+    //     incidents: [
+    //       {
+    //         x: 184.25,
+    //         y: 80,
+    //         width: 99,
+    //         height: 105,
+    //         time: 0,
+    //         status: "Show",
+    //         id: "kacb6zeg",
+    //         name: "kacb6zeg",
+    //         label: "",
+    //       },
+    //     ],
+    //     childrenNames: [],
+    //     parentName: "",
+    //     id: "kacb6zeg",
+    //     name: "kacb6zeg",
+    //     label: "1",
+    //   },
+    // ];
 
     return (
       <div>
         <h1>Main Implementation</h1>
-        <TwoDimensionalVideo
+        {/* <TwoDimensionalVideo
           url={video}
           defaultAnnotations={oo}
           onSubmit={(e) => this.submit(e)}
-        />
-        <TwoDimensionalVideo
-          url={video}
-          defaultAnnotations={
-            this.state.ready ? this.state.defaultAnnotations : []
-          }
-        />
+        /> */}
+        {this.state.tag}
       </div>
     );
   }
