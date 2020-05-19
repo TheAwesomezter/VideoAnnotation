@@ -29,14 +29,15 @@ export default class VideoAnnotation extends Component {
   async componentDidMount() {
     const response = await fetch("/getData");
     const json = await response.json();
-
-    console.log(json.data[1].drawnData);
+    
+    const ind = prompt("Enter the index you want to visit, latest is (in computer terms, index starts at 0, so you would need to subtract 1 from this, to see the latest): " + json.data.length);
+    // console.log(json.data[1].drawnData);
     this.setState({
       tag: (
         <TwoDimensionalVideo
-          url={video}
-          onSubmit={(e) => this.submit(e)}
-          defaultAnnotations={json.data[2].drawnData} // this number still needs to be changed manually
+        url={video}
+        onSubmit={(e) => this.submit(e)}
+        defaultAnnotations={json.data[ind].drawnData} // this number still needs to be changed manually
         />
       ),
     });
