@@ -9,14 +9,20 @@ export default class VideoAnnotation extends Component {
   constructor(props) {
     super(props);
 
-    this.width = 1920;
-    this.height = 1080;
-
     this.defaultAnnotations = undefined;
 
     this.state = {
       ready: false,
+      clearThing: (
+        <TwoDimensionalVideo
+          url={video}
+          onSubmit={(e) => this.submit(e)}
+          defaultAnnotations={[]}
+        ></TwoDimensionalVideo>
+      ),
     };
+
+    this.twodRef = React.createRef();
 
     this.options = {
       method: "POST",
@@ -29,26 +35,21 @@ export default class VideoAnnotation extends Component {
   async componentDidMount() {
     const response = await fetch("/getData");
     const json = await response.json();
-    
-    const ind = prompt("Enter the index you want to visit, latest is (in computer terms, index starts at 0, so you would need to subtract 1 from this, to see the latest): " + json.data.length);
-    // console.log(json.data[1].drawnData);
+
+    const ind = prompt(
+      "Enter the index you want to visit, latest is (in computer terms, index starts at 0, so you would need to subtract 1 from this, to see the latest): " +
+        json.data.length
+    );
     this.setState({
       tag: (
         <TwoDimensionalVideo
-        url={video}
-        onSubmit={(e) => this.submit(e)}
-        defaultAnnotations={json.data[ind].drawnData} // this number still needs to be changed manually
+          ref={this.twodRef}
+          url={video}
+          onSubmit={(e) => this.submit(e)}
+          defaultAnnotations={json.data[ind].drawnData}
         />
       ),
     });
-    // this.setState({ defaultData: json.data[0].drawnData }, () => {
-    //   console.log(this.state.defaultData[0]);
-    //   this.defaultAnnotations = this.state.defaultData[0];
-    //   this.setState({
-    //     defaultAnnotations: this.defaultAnnotations,
-    //     ready: true,
-    //   });
-    // });
   }
 
   submit(e) {
@@ -60,7 +61,6 @@ export default class VideoAnnotation extends Component {
   }
 
   async insertVideoData(data) {
-    // console.log(data);
     this.options.body = JSON.stringify(data);
 
     const response = await fetch("/insertData", this.options);
@@ -74,46 +74,17 @@ export default class VideoAnnotation extends Component {
     }
   }
 
+  clearVideo(e) {
+    this.setState({ ready: true });
+  }
+
   render() {
-    // const videoAnn = this.state.defAnn;
-    // const videoAnn = this.state.defAnn;
-    // console.log(this.state.defAnn);
-    // console.log(videoAnn);
-    console.log(this.state);
-
-    // let oo = [
-    //   {
-    //     color: "rgba(0, 0, 0, 1)",
-    //     incidents: [
-    //       {
-    //         x: 184.25,
-    //         y: 80,
-    //         width: 99,
-    //         height: 105,
-    //         time: 0,
-    //         status: "Show",
-    //         id: "kacb6zeg",
-    //         name: "kacb6zeg",
-    //         label: "",
-    //       },
-    //     ],
-    //     childrenNames: [],
-    //     parentName: "",
-    //     id: "kacb6zeg",
-    //     name: "kacb6zeg",
-    //     label: "1",
-    //   },
-    // ];
-
     return (
       <div>
         <h1>Main Implementation</h1>
-        {/* <TwoDimensionalVideo
-          url={video}
-          defaultAnnotations={oo}
-          onSubmit={(e) => this.submit(e)}
-        /> */}
-        {this.state.tag}
+
+        {this.state.ready ? this.state.clearThing : this.state.tag}
+        <button onClick={(e) => this.clearVideo(e)}>Clear</button>
       </div>
     );
   }
