@@ -12,7 +12,6 @@ export default class VideoAnnotation extends Component {
     this.defaultAnnotations = undefined;
 
     this.state = {
-      ready: false,
       clearThing: (
         <TwoDimensionalVideo
           url={video}
@@ -74,17 +73,12 @@ export default class VideoAnnotation extends Component {
     }
   }
 
-  clearVideo(e) {
-    this.setState({ ready: true });
-  }
-
   render() {
     return (
       <div>
         <h1>Main Implementation</h1>
 
-        {this.state.ready ? this.state.clearThing : this.state.tag}
-        <button onClick={(e) => this.clearVideo(e)}>Clear</button>
+        {this.state.tag}
       </div>
     );
   }
