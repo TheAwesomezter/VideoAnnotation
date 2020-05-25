@@ -1,10 +1,11 @@
 const VideoData = require("../db/models/video-insertion");
 
 const insertData = (req, res) => {
-  const body = req.body;
-  console.log(body)
+  const data = req.body.data;
+  const hash = req.body.hash;
+  const vidLink = req.body.video;
 
-  if (!body) {
+  if (!data) {
     return res.status(400).json({
       success: false,
       error: "Select a square",
@@ -13,7 +14,9 @@ const insertData = (req, res) => {
 
   const video = new VideoData();
   // video.incidentData.push(body);
-  video.drawnData = body;
+  video.drawnData = data;
+  video.hash = hash;
+  video.videoLink = vidLink;
 
   if (!video) {
     return res.status(400).json({ success: false });
@@ -63,8 +66,18 @@ const deleteAllData = async (req, res) => {
   });
 };
 
+const getRoomData = async (req, res) => {
+  const hash = req.params.hash;
+
+  await VideoData.find({ hash: hash }, (err, data) => {
+    if (err) throw err;
+    return res.json({ success: true, data: data });
+  }).catch((err) => console.log(err));
+};
+
 module.exports = {
   insertData,
   getData,
   deleteAllData,
+  getRoomData,
 };

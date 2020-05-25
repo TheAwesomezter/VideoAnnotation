@@ -19,6 +19,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error: "));
 app.post("/insertData", routes.insertData);
 app.get("/getData", routes.getData);
 app.get("/deleteAllData", routes.deleteAllData); // To be removed in production
+app.get("/video/:hash", routes.getRoomData);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client/build", "index.html"));
